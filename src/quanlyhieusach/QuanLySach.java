@@ -2,7 +2,11 @@ package quanlyhieusach;
 
 import java.util.ArrayList;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -19,38 +23,50 @@ import javax.swing.table.DefaultTableModel;
  */
 public class QuanLySach extends javax.swing.JFrame {
 
-    DBEngine db = new DBEngine();
-    private static ArrayList<Sach> listSach = new ArrayList<Sach>();
-    private static DefaultTableModel tblModel = new DefaultTableModel();
-    private static Sach sach = new Sach();
+    //DBEngine db = new DBEngine();
+    ArrayList<Sach> listSach = new ArrayList<>();
+    DefaultTableModel tblModel = new DefaultTableModel();
+    Sach sach = new Sach();
+    String fname = "Sach.dat";
 
     /**
      * Creates new form QuanLySach
      */
     public QuanLySach() {
         initComponents();
-        db.docFile(listSach, "Sach.dat");
-        listSach = new ArrayList<>();
-        tblModel = (DefaultTableModel) tblSach.getModel();
+        NEWFORM();
+        //db.docFile(fname);
+        //listSach = new ArrayList<>();
+//        tblModel = (DefaultTableModel) tblQuanLySach.getModel();
+        //fillTable();//Đổ dữ liệu từ list vào bảng
 
-        fillTable();//Đổ dữ liệu từ list vào bảng
+    }
+
+    public void NEWFORM() {
+        this.txtMaSach.setText("");
+        this.txtTenSach.setText("");
+        this.txtNhaXB.setText("");
+        this.txtTenTG.setText("");
+        this.txtGiaTien.setText("");
+        this.txtSoLuong.setValue(0);
 
     }
 
     private void fillTable() {
+        tblModel = (DefaultTableModel) tblQuanLySach.getModel();
         tblModel.setRowCount(0);//reset nd trong bang ve 0
-        int i = 0;
         for (Sach sach : listSach) {
-            tblModel.addRow(new Object[]{i++, sach.getMaSach(), sach.getTenSach(), sach.getTenTacGia(), sach.getNhaXB(), sach.getGiaTien(), sach.getSoLuong()});
+            tblModel.addRow(new Object[]{sach.getMaSach(), sach.getTenSach(), sach.getTenTacGia(), sach.getNhaXB(), sach.getSoLuong(), sach.getGiaTien()});
         }
 
-        tblModel.fireTableDataChanged();//Cập nhật dữ liệu hiển thị lên bảng
+//        db.ghiFile(sach, fname);
+//        tblModel.fireTableDataChanged();//Cập nhật dữ liệu hiển thị lên bảng
     }
 
     private void initTable() {
         String[] colums = new String[]{};
         tblModel.setColumnIdentifiers(colums);
-        tblSach.setModel(tblModel);
+        tblQuanLySach.setModel(tblModel);
     }
 
     @SuppressWarnings("unchecked")
@@ -59,7 +75,7 @@ public class QuanLySach extends javax.swing.JFrame {
 
         btnXoa = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tblSach = new javax.swing.JTable();
+        tblQuanLySach = new javax.swing.JTable();
         jSeparator2 = new javax.swing.JSeparator();
         jLabel8 = new javax.swing.JLabel();
         jTextField7 = new javax.swing.JTextField();
@@ -92,21 +108,26 @@ public class QuanLySach extends javax.swing.JFrame {
         btnXoa.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         btnXoa.setForeground(new java.awt.Color(255, 255, 255));
         btnXoa.setText("Xoá");
+        btnXoa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnXoaActionPerformed(evt);
+            }
+        });
 
-        tblSach.setModel(new javax.swing.table.DefaultTableModel(
+        tblQuanLySach.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "STT", "Mã sách", "Tên sách", "tên tác giả", "Nhà xuất bản", "Giá tiền", "Số lượng"
+                "Mã sách", "Tên sách", "tên tác giả", "Nhà xuất bản", "Số lượng", "Giá tiền"
             }
         ));
-        tblSach.addMouseListener(new java.awt.event.MouseAdapter() {
+        tblQuanLySach.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tblSachMouseClicked(evt);
+                tblQuanLySachMouseClicked(evt);
             }
         });
-        jScrollPane1.setViewportView(tblSach);
+        jScrollPane1.setViewportView(tblQuanLySach);
 
         jLabel8.setText("Tìm kiếm");
 
@@ -168,7 +189,7 @@ public class QuanLySach extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
         jLabel1.setText("Quản lý sản phẩm");
 
-        txtSoLuong.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
+        txtSoLuong.setModel(new javax.swing.SpinnerNumberModel());
         txtSoLuong.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
                 txtSoLuongFocusLost(evt);
@@ -373,30 +394,78 @@ public class QuanLySach extends javax.swing.JFrame {
 
     private void bntThoat_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bntThoat_ActionPerformed
         // TODO add your handling code here:
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        if (JOptionPane.showConfirmDialog(null, "Bạn chắc chắn muốn đóng ?", "Thông báo", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE) == JOptionPane.YES_OPTION) {
 
-        dispose();
+            this.dispose();
+        }
     }//GEN-LAST:event_bntThoat_ActionPerformed
 
     private void txtGiaTienActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtGiaTienActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtGiaTienActionPerformed
+    public JTextField setTxtMaSach() throws Exception {
+        if (txtMaSach.getText().trim().equals("")) {
+            throw new Exception("Mã sách không được để trống");
+        }
+        return txtMaSach;
+    }
 
-    private void btnThemMoi_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemMoi_ActionPerformed
-        StringBuilder sb = new StringBuilder();//Sd để lưu các thông báo lỗi
+    public JTextField setTxtTenSach() throws Exception {
+        if (txtTenSach.getText().trim().equals("")) {
+            throw new Exception("Tên sách không được để trống");
+        }
+        return txtTenSach;
+    }
 
-        try {
-            Sach sach = new Sach();
-            sach.setMaSach(txtMaSach.getText());
+    public JTextField setTxtTenTacGia() throws Exception {
+        if (txtTenTG.getText().trim().equals("")) {
+            throw new Exception("Tên tác giả không được để trống");
+        }
+        return txtTenTG;
+    }
 
-            sach.setTenSach(txtTenSach.getText());
-            sach.setNhaXB(txtNhaXB.getText());
-            sach.setTenTacGia(txtTenTG.getText());
-            try {
-                sach.setGiaTien(Float.parseFloat(txtGiaTien.getText()));
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(rootPane, "Giá tiền phải nhập số");
+    public JTextField setTxtNhaXB() throws Exception {
+        if (txtNhaXB.getText().trim().equals("")) {
+            throw new Exception("Nhà xuất bản không được để trống");
+        }
+        return txtNhaXB;
+    }
+
+    public JTextField setTxtGiaTien() throws Exception {
+        if (txtGiaTien.getText().equals("")) {
+            throw new Exception("Giá tiền không được để trống");
+        } else {
+            if (Double.parseDouble(txtGiaTien.getText()) < 0) {
+                throw new Exception("Giá tiền phải lớn hơn 0");
             }
-            sach.setSoLuong((int) (txtSoLuong.getValue()));
+        }
+
+        return txtGiaTien;
+    }
+
+//    public boolean setTxtSoLuong() throws Exception {
+//        boolean check = true;
+//        if (txtSoLuong.equals(0)) {
+//            throw new Exception("Số lượng phải lớn hơn 0");
+//        }
+//        return check;
+//    }
+    private void btnThemMoi_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemMoi_ActionPerformed
+
+        //StringBuilder sb = new StringBuilder();//Sd để lưu các thông báo lỗi
+        try {
+
+            sach = new Sach((setTxtMaSach().getText()), setTxtTenSach().getText(),
+                    setTxtTenTacGia().getText(), setTxtNhaXB().getText(),
+                    (int) txtSoLuong.getValue(),
+                    Float.parseFloat(setTxtGiaTien().getText())
+            );
+//            for (Sach sach1 : listSach) {
+//                if(sach1.getMaSach().equals(setTxtMaSach().getText())){
+//                    JOptionPane.showMessageDialog(QuanLySach.this,"Mã sách không được trùng nhau","Error",JOptionPane.ERROR_MESSAGE);
+//                }
+//            }
 //            int filterSize = listSach.stream().filter(obj -> obj.getTenSach() == "1" && obj.getMaSach() == "1").collect(Collectors.toList()).size();
 //            if (filterSize > 0) {
             if (listSach.contains(sach)) {
@@ -406,23 +475,67 @@ public class QuanLySach extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(QuanLySach.this, "Thêm sản phẩm thành công", "", JOptionPane.INFORMATION_MESSAGE);
 
                 fillTable();//Hiển thị ra table
-                db.ghiFile(listSach, "Sach.dat");
+                this.NEWFORM();
             }
-//        } catch (NullPointerException e) {
-//            JOptionPane.showMessageDialog(QuanLySach.this, e.toString(), "Error", JOptionPane.ERROR_MESSAGE);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(QuanLySach.this, e.toString(), "Error", JOptionPane.ERROR_MESSAGE);
         }
 
-
     }//GEN-LAST:event_btnThemMoi_ActionPerformed
 
-    private void tblSachMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblSachMouseClicked
+    private void tblQuanLySachMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblQuanLySachMouseClicked
         // TODO add your handling code here:
-    }//GEN-LAST:event_tblSachMouseClicked
+        tblModel = (DefaultTableModel) tblQuanLySach.getModel();
+        int index = tblQuanLySach.getSelectedRow();//kích vào dòng thứ index trên bảng
+        if (index == -1) {//không tương tác với bảng
+            return;
+        }
+        String masach = tblModel.getValueAt(index, 0).toString();
+        String ten = tblModel.getValueAt(index, 1).toString();
+        String tenTG = tblModel.getValueAt(index, 2).toString();
+        String nhaXB = tblModel.getValueAt(index, 3).toString();
+        Object sl = tblModel.getValueAt(index, 4);
+        String gia = tblModel.getValueAt(index, 5).toString();
+
+        txtMaSach.setText(masach);
+        txtMaSach.setEditable(false);
+        txtTenSach.setText(ten);
+        txtNhaXB.setText(nhaXB);
+        txtTenTG.setText(tenTG);
+        txtGiaTien.setText(gia);
+        txtSoLuong.setValue(sl);
+    }//GEN-LAST:event_tblQuanLySachMouseClicked
 
     private void btnSua_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSua_ActionPerformed
-        // TODO add your handling code here:
+        tblModel = (DefaultTableModel) tblQuanLySach.getModel();
+        int index = tblQuanLySach.getSelectedRow();//kích vào dòng thứ index trên bảng
+        if (index != -1) {
+            try {
+                Sach suaSach = new Sach();
+                suaSach.setMaSach(txtMaSach.getText());
+                suaSach.setTenSach(txtTenSach.getText());
+                suaSach.setNhaXB(txtNhaXB.getText());
+                suaSach.setTenTacGia(txtTenTG.getText());
+                suaSach.setGiaTien(Double.parseDouble(txtGiaTien.getText()));
+                suaSach.setSoLuong((int) txtSoLuong.getValue());
+                boolean isExist = listSach.contains(suaSach);
+                if (listSach.contains(suaSach)) {
+                    JOptionPane.showMessageDialog(QuanLySach.this, "Sách đã tồn tại", "ERROR", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    listSach.set(index, suaSach);
+                    JOptionPane.showMessageDialog(QuanLySach.this, "Sửa sách thành công", "", JOptionPane.INFORMATION_MESSAGE);
+
+                    fillTable();//Hiển thị ra table
+                    this.NEWFORM();
+                }
+            } catch (Exception e) {
+                System.out.println(e.toString());
+            }
+        } else {
+            JOptionPane.showMessageDialog(QuanLySach.this, "Vui lòng chọn sách muốn sửa", "ERROR", JOptionPane.ERROR_MESSAGE);
+        }
+
+
     }//GEN-LAST:event_btnSua_ActionPerformed
 
     private void LamMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LamMoiActionPerformed
@@ -436,43 +549,43 @@ public class QuanLySach extends javax.swing.JFrame {
     }//GEN-LAST:event_LamMoiActionPerformed
 
     private void txtMaSachFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtMaSachFocusLost
-        if (txtMaSach.getText().length() > 0) {
-
-        } else {
-            JOptionPane.showMessageDialog(rootPane, "Mã sách không được để trống");
-        }
+//        if (txtMaSach.getText().length() > 0) {
+//
+//        } else {
+//            JOptionPane.showMessageDialog(rootPane, "Mã sách không được để trống");
+//        }
     }//GEN-LAST:event_txtMaSachFocusLost
 
     private void txtTenSachFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtTenSachFocusLost
-        if (txtTenSach.getText().length() > 0) {
-
-        } else {
-            JOptionPane.showMessageDialog(rootPane, "Tên sách không được để trống");
-        }
+//        if (txtTenSach.getText().length() > 0) {
+//
+//        } else {
+//            JOptionPane.showMessageDialog(rootPane, "Tên sách không được để trống");
+//        }
     }//GEN-LAST:event_txtTenSachFocusLost
 
     private void txtTenTGFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtTenTGFocusLost
-        if (txtTenTG.getText().length() > 0) {
-
-        } else {
-            JOptionPane.showMessageDialog(rootPane, "Tên tác giả không được để trống");
-        }
+//        if (txtTenTG.getText().length() > 0) {
+//
+//        } else {
+//            JOptionPane.showMessageDialog(rootPane, "Tên tác giả không được để trống");
+//        }
     }//GEN-LAST:event_txtTenTGFocusLost
 
     private void txtNhaXBFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtNhaXBFocusLost
-        if (txtNhaXB.getText().length() > 0) {
-
-        } else {
-            JOptionPane.showMessageDialog(rootPane, "Nhà xuất bản không được để trống");
-        }
+//        if (txtNhaXB.getText().length() > 0) {
+//
+//        } else {
+//            JOptionPane.showMessageDialog(rootPane, "Nhà xuất bản không được để trống");
+//        }
     }//GEN-LAST:event_txtNhaXBFocusLost
 
     private void txtGiaTienFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtGiaTienFocusLost
-        if (txtGiaTien.getText().length() > 0) {
-
-        } else {
-            JOptionPane.showMessageDialog(rootPane, "Giá tiền không được để trống");
-        }
+//        if (txtGiaTien.getText().length() > 0) {
+//
+//        } else {
+//            JOptionPane.showMessageDialog(rootPane, "Giá tiền không được để trống");
+//        }
     }//GEN-LAST:event_txtGiaTienFocusLost
 
     private void txtSoLuongFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtSoLuongFocusLost
@@ -480,6 +593,27 @@ public class QuanLySach extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(rootPane, "Số lượng phải lớn hơn 0");
         }
     }//GEN-LAST:event_txtSoLuongFocusLost
+
+    private void btnXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaActionPerformed
+        try {
+            tblModel = (DefaultTableModel) tblQuanLySach.getModel();
+            int indext = tblQuanLySach.getSelectedRow();
+            if (indext != -1) {
+                int xacNhan = JOptionPane.showConfirmDialog(QuanLySach.this,
+                        "Bạn có muốn xoá sản phẩm này?", "Xác nhận",
+                        JOptionPane.YES_NO_OPTION);
+                if (xacNhan == JOptionPane.YES_OPTION) {
+                    listSach.remove(indext);
+                    fillTable();
+                    JOptionPane.showMessageDialog(rootPane, "Xoá thành công");
+                }
+            } else {
+                JOptionPane.showMessageDialog(rootPane, "Vui lòng chọn sách muốn xoá", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (Exception e) {
+        }
+
+    }//GEN-LAST:event_btnXoaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -538,7 +672,7 @@ public class QuanLySach extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField7;
     private javax.swing.JRadioButton sapxep_Giam;
     private javax.swing.JRadioButton sapxep_Tang;
-    private javax.swing.JTable tblSach;
+    private javax.swing.JTable tblQuanLySach;
     private javax.swing.JTextField txtGiaTien;
     private javax.swing.JTextField txtMaSach;
     private javax.swing.JTextField txtNhaXB;
