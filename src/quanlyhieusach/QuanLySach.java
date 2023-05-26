@@ -1,5 +1,10 @@
 package quanlyhieusach;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -23,11 +28,9 @@ import javax.swing.table.DefaultTableModel;
  */
 public class QuanLySach extends javax.swing.JFrame {
 
-    //DBEngine db = new DBEngine();
     ArrayList<Sach> listSach = new ArrayList<>();
     DefaultTableModel tblModel = new DefaultTableModel();
     Sach sach = new Sach();
-    String fname = "Sach.dat";
 
     /**
      * Creates new form QuanLySach
@@ -35,7 +38,9 @@ public class QuanLySach extends javax.swing.JFrame {
     public QuanLySach() {
         initComponents();
         NEWFORM();
-        //db.docFile(fname);
+        docFile();
+        fillTable();
+        //docFile();
         //listSach = new ArrayList<>();
 //        tblModel = (DefaultTableModel) tblQuanLySach.getModel();
         //fillTable();//Đổ dữ liệu từ list vào bảng
@@ -44,6 +49,7 @@ public class QuanLySach extends javax.swing.JFrame {
 
     public void NEWFORM() {
         this.txtMaSach.setText("");
+        this.txtMaSach.setEditable(false);
         this.txtTenSach.setText("");
         this.txtNhaXB.setText("");
         this.txtTenTG.setText("");
@@ -55,18 +61,69 @@ public class QuanLySach extends javax.swing.JFrame {
     private void fillTable() {
         tblModel = (DefaultTableModel) tblQuanLySach.getModel();
         tblModel.setRowCount(0);//reset nd trong bang ve 0
-        for (Sach sach : listSach) {
-            tblModel.addRow(new Object[]{sach.getMaSach(), sach.getTenSach(), sach.getTenTacGia(), sach.getNhaXB(), sach.getSoLuong(), sach.getGiaTien()});
+        String ma = "H00";
+        int i =1;
+        
+        for (Sach sachs : listSach) {
+            try {
+                sachs.setMaSach(ma+ i++);
+            } catch (Exception ex) {
+                Logger.getLogger(QuanLySach.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            tblModel.addRow(new Object[]{sachs.getMaSach(), sachs.getTenSach(), sachs.getTenTacGia(), sachs.getNhaXB(), sachs.getSoLuong(), sachs.getGiaTien()});
         }
-
-//        db.ghiFile(sach, fname);
 //        tblModel.fireTableDataChanged();//Cập nhật dữ liệu hiển thị lên bảng
     }
-
-    private void initTable() {
-        String[] colums = new String[]{};
-        tblModel.setColumnIdentifiers(colums);
-        tblQuanLySach.setModel(tblModel);
+    private void docFile(){
+        FileInputStream fileInputStream = null;
+        ObjectInputStream objectInputStream = null;
+        try {
+            fileInputStream = new FileInputStream("Sach.dat");
+            objectInputStream = new ObjectInputStream(fileInputStream);
+            listSach = (ArrayList<Sach>) objectInputStream.readObject();
+            
+        }catch(FileNotFoundException e){
+            
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }finally{
+            try {
+                if(objectInputStream != null){
+                    objectInputStream.close();
+                }
+                if(fileInputStream!=null){
+                    fileInputStream.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            
+        }
+        
+    }
+    private void ghiFile(){
+        FileOutputStream fileOutputStream = null;
+        ObjectOutputStream objectOutputStream = null;
+        try {
+            fileOutputStream = new FileOutputStream("Sach.dat");
+            objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            objectOutputStream.writeObject(listSach);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }finally{
+            try {
+                if(objectOutputStream != null){
+                    objectOutputStream.close();
+                }
+                if(fileOutputStream!=null){
+                    fileOutputStream.close();
+                }
+            } catch (Exception e) {
+            }
+            
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -78,7 +135,7 @@ public class QuanLySach extends javax.swing.JFrame {
         tblQuanLySach = new javax.swing.JTable();
         jSeparator2 = new javax.swing.JSeparator();
         jLabel8 = new javax.swing.JLabel();
-        jTextField7 = new javax.swing.JTextField();
+        txtTim = new javax.swing.JTextField();
         btnTim = new javax.swing.JButton();
         jLabel9 = new javax.swing.JLabel();
         sapxep_Tang = new javax.swing.JRadioButton();
@@ -101,6 +158,7 @@ public class QuanLySach extends javax.swing.JFrame {
         btnThemMoi_ = new javax.swing.JButton();
         btnSua_ = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -132,6 +190,11 @@ public class QuanLySach extends javax.swing.JFrame {
         jLabel8.setText("Tìm kiếm");
 
         btnTim.setText("Tìm");
+        btnTim.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTimActionPerformed(evt);
+            }
+        });
 
         jLabel9.setText("Sắp xếp");
 
@@ -247,23 +310,33 @@ public class QuanLySach extends javax.swing.JFrame {
 
         jButton1.setText("Lưu file Excel");
 
+        jButton2.setText("LoadTable");
+        jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton2MouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jButton1)
-                        .addGap(273, 273, 273))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(LamMoi)
-                        .addGap(95, 95, 95))))
-            .addGroup(layout.createSequentialGroup()
                 .addGap(347, 347, 347)
                 .addComponent(jLabel1)
                 .addGap(0, 459, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(LamMoi)
+                    .addComponent(jButton1))
+                .addGap(273, 273, 273))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(293, 293, 293)
+                .addComponent(bntThoat_)
+                .addGap(52, 52, 52)
+                .addComponent(jButton2)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -305,7 +378,7 @@ public class QuanLySach extends javax.swing.JFrame {
                                         .addGroup(layout.createSequentialGroup()
                                             .addComponent(jLabel8)
                                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                            .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                            .addComponent(txtTim, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                     .addGap(18, 18, 18)
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(btnXoa)
@@ -318,9 +391,6 @@ public class QuanLySach extends javax.swing.JFrame {
                                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                             .addComponent(sapxep_Giam))))))
                         .addGroup(layout.createSequentialGroup()
-                            .addGap(334, 334, 334)
-                            .addComponent(bntThoat_))
-                        .addGroup(layout.createSequentialGroup()
                             .addGap(122, 122, 122)
                             .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 668, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addContainerGap(228, Short.MAX_VALUE)))
@@ -330,11 +400,15 @@ public class QuanLySach extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
-                .addGap(105, 105, 105)
+                .addGap(113, 113, 113)
                 .addComponent(LamMoi)
-                .addGap(46, 46, 46)
+                .addGap(38, 38, 38)
                 .addComponent(jButton1)
-                .addContainerGap(259, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 295, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(bntThoat_)
+                    .addComponent(jButton2))
+                .addGap(21, 21, 21))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addGap(63, 63, 63)
@@ -365,16 +439,14 @@ public class QuanLySach extends javax.swing.JFrame {
                     .addGap(20, 20, 20)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel8)
-                        .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtTim, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(btnTim)
                         .addComponent(jLabel9)
                         .addComponent(sapxep_Tang)
                         .addComponent(sapxep_Giam))
                     .addGap(18, 18, 18)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
-                    .addComponent(bntThoat_)
-                    .addGap(28, 28, 28)))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE)
+                    .addGap(69, 69, 69)))
         );
 
         pack();
@@ -394,10 +466,10 @@ public class QuanLySach extends javax.swing.JFrame {
 
     private void bntThoat_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bntThoat_ActionPerformed
         // TODO add your handling code here:
-        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        if (JOptionPane.showConfirmDialog(null, "Bạn chắc chắn muốn đóng ?", "Thông báo", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE) == JOptionPane.YES_OPTION) {
-
-            this.dispose();
+        int confirmed = JOptionPane.showConfirmDialog(QuanLySach.this,"Bạn có muốn thoát không?","Thông báo", JOptionPane.YES_NO_OPTION);
+        if(confirmed == JOptionPane.YES_OPTION){
+            ghiFile();
+            System.exit(0);
         }
     }//GEN-LAST:event_bntThoat_ActionPerformed
 
@@ -405,9 +477,9 @@ public class QuanLySach extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtGiaTienActionPerformed
     public JTextField setTxtMaSach() throws Exception {
-        if (txtMaSach.getText().trim().equals("")) {
-            throw new Exception("Mã sách không được để trống");
-        }
+//        if (txtMaSach.getText().trim().equals("")) {
+//            throw new Exception("Mã sách không được để trống");
+//        }
         return txtMaSach;
     }
 
@@ -451,6 +523,7 @@ public class QuanLySach extends javax.swing.JFrame {
 //        }
 //        return check;
 //    }
+    
     private void btnThemMoi_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemMoi_ActionPerformed
 
         //StringBuilder sb = new StringBuilder();//Sd để lưu các thông báo lỗi
@@ -477,7 +550,7 @@ public class QuanLySach extends javax.swing.JFrame {
                 fillTable();//Hiển thị ra table
                 this.NEWFORM();
             }
-        } catch (Exception e) {
+        }  catch (Exception e) {
             JOptionPane.showMessageDialog(QuanLySach.this, e.toString(), "Error", JOptionPane.ERROR_MESSAGE);
         }
 
@@ -615,6 +688,26 @@ public class QuanLySach extends javax.swing.JFrame {
 
     }//GEN-LAST:event_btnXoaActionPerformed
 
+    private void btnTimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTimActionPerformed
+        tblModel = (DefaultTableModel) tblQuanLySach.getModel();
+        ArrayList<Sach> dsTim = new ArrayList<>();
+        for (Sach sach : listSach) {
+            if (txtTim.getText().trim().equalsIgnoreCase(sach.getTenSach()) || txtTim.getText().trim().equalsIgnoreCase(sach.getNhaXB()) || txtTim.getText().trim().equalsIgnoreCase(sach.getTenTacGia()) ) {
+                dsTim.add(sach);
+            }
+        }
+        tblModel.setRowCount(0);//reset nd trong bang ve 0
+        for (Sach sach : dsTim) {
+            tblModel.addRow(new Object[]{sach.getMaSach(), sach.getTenSach(), sach.getTenTacGia(), sach.getNhaXB(), sach.getSoLuong(), sach.getGiaTien()});
+        }
+
+    }//GEN-LAST:event_btnTimActionPerformed
+
+    private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
+        fillTable();
+        NEWFORM();
+    }//GEN-LAST:event_jButton2MouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -658,6 +751,7 @@ public class QuanLySach extends javax.swing.JFrame {
     private javax.swing.JButton btnTim;
     private javax.swing.JButton btnXoa;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -669,7 +763,6 @@ public class QuanLySach extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator2;
-    private javax.swing.JTextField jTextField7;
     private javax.swing.JRadioButton sapxep_Giam;
     private javax.swing.JRadioButton sapxep_Tang;
     private javax.swing.JTable tblQuanLySach;
@@ -679,5 +772,6 @@ public class QuanLySach extends javax.swing.JFrame {
     private javax.swing.JSpinner txtSoLuong;
     private javax.swing.JTextField txtTenSach;
     private javax.swing.JTextField txtTenTG;
+    private javax.swing.JTextField txtTim;
     // End of variables declaration//GEN-END:variables
 }
