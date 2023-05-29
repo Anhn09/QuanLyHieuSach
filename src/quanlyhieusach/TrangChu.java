@@ -1,5 +1,7 @@
 package quanlyhieusach;
 
+import javax.swing.JOptionPane;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -32,7 +34,7 @@ public class TrangChu extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         QLSach_ = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        btlThoat = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -53,8 +55,13 @@ public class TrangChu extends javax.swing.JFrame {
             }
         });
 
-        jButton4.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jButton4.setText("Thoát");
+        btlThoat.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        btlThoat.setText("Thoát");
+        btlThoat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btlThoatActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -73,7 +80,7 @@ public class TrangChu extends javax.swing.JFrame {
                 .addContainerGap(120, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton4)
+                .addComponent(btlThoat)
                 .addGap(370, 370, 370))
         );
         layout.setVerticalGroup(
@@ -87,7 +94,7 @@ public class TrangChu extends javax.swing.JFrame {
                     .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(QLSach_, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 105, Short.MAX_VALUE)
-                .addComponent(jButton4)
+                .addComponent(btlThoat)
                 .addGap(43, 43, 43))
         );
 
@@ -101,6 +108,13 @@ public class TrangChu extends javax.swing.JFrame {
         quanlysach.setVisible(true);
         // TODO add your handling code here:
     }//GEN-LAST:event_QLSach_ActionPerformed
+
+    private void btlThoatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btlThoatActionPerformed
+       int confirm = JOptionPane.showConfirmDialog(TrangChu.this, "Bạn có muốn thoát không?","Thông báo",JOptionPane.YES_NO_OPTION);
+      if(confirm==JOptionPane.YES_OPTION){
+          dispose();
+      }
+    }//GEN-LAST:event_btlThoatActionPerformed
 
     /**
      * @param args the command line arguments
@@ -139,9 +153,9 @@ public class TrangChu extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton QLSach_;
+    private javax.swing.JButton btlThoat;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
 }
