@@ -1,4 +1,4 @@
-package quanlyhieusach;
+package Lop;
 
 import java.io.Serializable;
 import java.util.logging.Level;

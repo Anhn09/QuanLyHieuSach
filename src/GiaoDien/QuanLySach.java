@@ -1,24 +1,18 @@
-package quanlyhieusach;
+package GiaoDien;
 
+import Lop.Sach;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import static java.util.Collections.sort;
-import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import java.util.Comparator;
+import java.util.List;
 import javax.swing.JSpinner;
 
 /*
@@ -41,13 +35,13 @@ public class QuanLySach extends javax.swing.JFrame {
      */
     public QuanLySach() {
         initComponents();
-        NEWFORM();
+        clearInputForm();
         docFile();
-        fillTable();
+        fillTable(listSach);
 
     }
 
-    public void NEWFORM() {
+    public void clearInputForm() {
         this.txtMaSach.setText("");
         this.txtMaSach.setEditable(false);
         this.txtTenSach.setText("");
@@ -58,11 +52,11 @@ public class QuanLySach extends javax.swing.JFrame {
 
     }
 
-    private void fillTable() {
+    private void fillTable(List<Sach> listSachInput) {
         tblModel = (DefaultTableModel) tblQuanLySach.getModel();
         tblModel.setRowCount(0);//reset nd trong bang ve 0
 
-        for (Sach sachs : listSach) {
+        for (Sach sachs : listSachInput) {
             tblModel.addRow(new Object[]{sachs.getMaSach(), sachs.getTenSach(), sachs.getTenTacGia(), sachs.getNhaXB(), sachs.getSoLuong(), sachs.getGiaTien()});
         }
     }
@@ -249,6 +243,11 @@ public class QuanLySach extends javax.swing.JFrame {
 
         buttonGroup1.add(sapxep_Giam);
         sapxep_Giam.setText("Giá giảm dần");
+        sapxep_Giam.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sapxep_GiamActionPerformed(evt);
+            }
+        });
 
         LamMoi.setForeground(new java.awt.Color(0, 0, 255));
         LamMoi.setText("Làm mới");
@@ -491,7 +490,7 @@ public class QuanLySach extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtGiaTienActionPerformed
     public JTextField setTxtMaSach() throws Exception {
-        
+
         return txtMaSach;
     }
 
@@ -535,32 +534,6 @@ public class QuanLySach extends javax.swing.JFrame {
         }
         return txtSoLuong;
     }
-
-    private void btnThemMoi_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemMoi_ActionPerformed
-
-        //StringBuilder sb = new StringBuilder();//Sd để lưu các thông báo lỗi
-        txtMaSach.setText("H00" + listSach.size());
-        try {
-
-            sach = new Sach((setTxtMaSach().getText()), setTxtTenSach().getText(),
-                    setTxtTenTacGia().getText(), setTxtNhaXB().getText(),
-                    (int) setTxtSoLuong().getValue(),
-                    Float.parseFloat(setTxtGiaTien().getText())
-            );
-            if (listSach.contains(sach)) {
-                JOptionPane.showMessageDialog(QuanLySach.this, "Sản phẩm đã tồn tại", "ERROR", JOptionPane.ERROR_MESSAGE);
-            } else {
-                listSach.add(sach);
-                JOptionPane.showMessageDialog(QuanLySach.this, "Thêm sản phẩm thành công", "", JOptionPane.INFORMATION_MESSAGE);
-
-                fillTable();//Hiển thị ra table
-                this.NEWFORM();
-            }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(QuanLySach.this, e.toString(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
-
-    }//GEN-LAST:event_btnThemMoi_ActionPerformed
 
     private void tblQuanLySachMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblQuanLySachMouseClicked
         // TODO add your handling code here:
@@ -610,8 +583,8 @@ public class QuanLySach extends javax.swing.JFrame {
                     listSach.set(index, suaSach);
                     JOptionPane.showMessageDialog(QuanLySach.this, "Sửa sách thành công", "", JOptionPane.INFORMATION_MESSAGE);
 
-                    fillTable();//Hiển thị ra table
-                    this.NEWFORM();
+                    fillTable(listSach);//Hiển thị ra table
+                    this.clearInputForm();
                 }
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(QuanLySach.this, e.toString(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -689,7 +662,7 @@ public class QuanLySach extends javax.swing.JFrame {
                         JOptionPane.YES_NO_OPTION);
                 if (xacNhan == JOptionPane.YES_OPTION) {
                     listSach.remove(indext);
-                    fillTable();
+                    fillTable(listSach);
                     JOptionPane.showMessageDialog(rootPane, "Xoá thành công");
                 }
             } else {
@@ -703,26 +676,18 @@ public class QuanLySach extends javax.swing.JFrame {
     private void btnTimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTimActionPerformed
         tblModel = (DefaultTableModel) tblQuanLySach.getModel();
         ArrayList<Sach> dsTim = new ArrayList<>();
+        String inputSearch = txtTim.getText().trim().toLowerCase();
         for (Sach sach : listSach) {
-            if (txtTim.getText().trim().equalsIgnoreCase(sach.getTenSach()) || txtTim.getText().trim().equalsIgnoreCase(sach.getNhaXB()) || txtTim.getText().trim().equalsIgnoreCase(sach.getTenTacGia())) {
+            if (sach.getTenSach().toLowerCase().contains(inputSearch) || sach.getNhaXB().toLowerCase().contains(inputSearch) || sach.getTenTacGia().toLowerCase().contains(inputSearch)) {
                 dsTim.add(sach);
             }
         }
-        tblModel.setRowCount(0);//reset nd trong bang ve 0
-        for (Sach sach : dsTim) {
-            tblModel.addRow(new Object[]{sach.getMaSach(), sach.getTenSach(), sach.getTenTacGia(), sach.getNhaXB(), sach.getSoLuong(), sach.getGiaTien()});
-        }
-//        for (Sach sach : dsTim) {
-//            tblModel.addRow(new Object[]{sach.getMaSach(), sach.getTenSach(), sach.getTenTacGia(), sach.getNhaXB(), sach.getSoLuong(), sach.getGiaTien()});
-//        }
-
+        fillTable(dsTim);
     }//GEN-LAST:event_btnTimActionPerformed
 
     private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
-        fillTable();
-        sapxep_Tang.isSelected();
-        NEWFORM();
-        ghiFile();
+        fillTable(listSach);
+        clearInputForm();
     }//GEN-LAST:event_jButton2MouseClicked
 
     private void sapxep_TangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sapxep_TangActionPerformed
@@ -732,8 +697,9 @@ public class QuanLySach extends javax.swing.JFrame {
                 return Double.compare(o1.getGiaTien(), o2.getGiaTien());
             }
         };
-        sort(listSach, tang);
-        fillTable();
+        List<Sach> listSachTmp = new ArrayList<Sach>(listSach);
+        sort(listSachTmp, tang);
+        fillTable(listSachTmp);
     }//GEN-LAST:event_sapxep_TangActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -751,6 +717,43 @@ public class QuanLySach extends javax.swing.JFrame {
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
 
     }//GEN-LAST:event_formWindowClosed
+
+    private void sapxep_GiamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sapxep_GiamActionPerformed
+        Comparator<Sach> tang = new Comparator<Sach>() {
+            @Override
+            public int compare(Sach o1, Sach o2) {
+                return Double.compare(o1.getGiaTien(), o2.getGiaTien());
+            }
+        };
+        List<Sach> listSachTmp = new ArrayList<Sach>(listSach);
+        sort(listSachTmp, tang.reversed());
+        fillTable(listSachTmp);
+    }//GEN-LAST:event_sapxep_GiamActionPerformed
+
+    private void btnThemMoi_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemMoi_ActionPerformed
+
+        //StringBuilder sb = new StringBuilder();//Sd để lưu các thông báo lỗi
+        txtMaSach.setText("H00" + listSach.size());
+        try {
+
+            sach = new Sach((setTxtMaSach().getText()), setTxtTenSach().getText(),
+                    setTxtTenTacGia().getText(), setTxtNhaXB().getText(),
+                    (int) setTxtSoLuong().getValue(),
+                    Float.parseFloat(setTxtGiaTien().getText())
+            );
+            if (listSach.contains(sach)) {
+                JOptionPane.showMessageDialog(QuanLySach.this, "Sản phẩm đã tồn tại", "ERROR", JOptionPane.ERROR_MESSAGE);
+            } else {
+                listSach.add(sach);
+                JOptionPane.showMessageDialog(QuanLySach.this, "Thêm sản phẩm thành công", "", JOptionPane.INFORMATION_MESSAGE);
+
+                fillTable(listSach);//Hiển thị ra table
+                this.clearInputForm();
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(QuanLySach.this, e.toString(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnThemMoi_ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -777,6 +780,9 @@ public class QuanLySach extends javax.swing.JFrame {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(QuanLySach.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
