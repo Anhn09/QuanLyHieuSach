@@ -42,7 +42,7 @@ public class QuanLyTaiKhoan extends javax.swing.JFrame {
 
     public void layTaiKhoan() {
        // Đường dẫn đến tệp tin txt chứa dữ liệu
-    String filePath = "D:\\taikhoanNV.txt";
+    String filePath = "taikhoanNV.txt";
 
     // Tạo danh sách để lưu các tài khoản
     
@@ -330,7 +330,7 @@ private boolean kiemTraMaNhanVienTonTai(String filePath, String maNV) {
 }
     private void jbtnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnThemActionPerformed
         try {
-    String filePath = "D:\\taikhoanNV.txt";
+    String filePath = "taikhoanNV.txt";
     String maNV = jtfMaNV.getText();
     
     // Kiểm tra nếu mã nhân viên đã tồn tại thì không thêm mới
@@ -364,7 +364,7 @@ loadTable();
     }//GEN-LAST:event_jbtnThemActionPerformed
 
     private void jbtnSuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnSuaActionPerformed
-      String filePath = "D:\\taikhoanNV.txt";
+      String filePath = "taikhoanNV.txt";
     String maNV = jtfMaNV.getText();
     String tenNV = jtfTenNV.getText();
     String diaChi = jtfDiaChi.getText();
@@ -406,7 +406,7 @@ loadTable();
     }//GEN-LAST:event_jbtnSuaActionPerformed
 
     private void jbtnXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnXoaActionPerformed
-       String filePath = "D:\\taikhoanNV.txt";
+       String filePath = "taikhoanNV.txt";
     String maNV = jtfMaNV.getText();
     
     // Đọc tất cả các dòng từ tệp tin và lưu vào danh sách tạm thời
@@ -478,6 +478,7 @@ loadTable();
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(QuanLyTaiKhoan.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
