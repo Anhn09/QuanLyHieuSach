@@ -152,7 +152,7 @@ public class DangNhap extends javax.swing.JFrame {
     }//GEN-LAST:event_jbtnHuyActionPerformed
 
     private void jbtnDangNhapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnDangNhapActionPerformed
-         String filePath = "D:\\account.txt";
+         String filePath = "account.txt";
     ArrayList<DangNhapTK> ds = new ArrayList<>();
     
     try {
