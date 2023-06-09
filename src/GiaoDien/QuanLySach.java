@@ -26,7 +26,7 @@ import javax.swing.JSpinner;
  */
 public class QuanLySach extends javax.swing.JFrame {
 
-    ArrayList<Sach> listSach = new ArrayList<>();
+    public static ArrayList<Sach> listSach = docFile();
     DefaultTableModel tblModel = new DefaultTableModel();
     Sach sach = new Sach();
 
@@ -36,14 +36,22 @@ public class QuanLySach extends javax.swing.JFrame {
     public QuanLySach() {
         initComponents();
         clearInputForm();
-        docFile();
         fillTable(listSach);
 
     }
 
+    public static List<String> getData() {
+        List<String> data = new ArrayList<>();
+        for (Sach s : listSach) {
+            String maSach = s.getMaSach();
+            data.add(maSach);
+        }
+        return data;
+    }
+
     public void clearInputForm() {
         this.txtMaSach.setText("");
-        this.txtMaSach.setEditable(false);
+        this.txtMaSach.setEditable(true);
         this.txtTenSach.setText("");
         this.txtNhaXB.setText("");
         this.txtTenTG.setText("");
@@ -61,13 +69,14 @@ public class QuanLySach extends javax.swing.JFrame {
         }
     }
 
-    private void docFile() {
+    public static ArrayList<Sach> docFile() {
+        ArrayList<Sach> listSachActual = new ArrayList<>();
         FileInputStream fileInputStream = null;
         ObjectInputStream objectInputStream = null;
         try {
             fileInputStream = new FileInputStream("Sach.dat");
             objectInputStream = new ObjectInputStream(fileInputStream);
-            listSach = (ArrayList<Sach>) objectInputStream.readObject();
+            listSachActual = (ArrayList<Sach>) objectInputStream.readObject();
 
         } catch (FileNotFoundException e) {
 
@@ -86,7 +95,7 @@ public class QuanLySach extends javax.swing.JFrame {
             }
 
         }
-
+        return listSachActual;
     }
 
     private void ghiFile() {
@@ -145,7 +154,6 @@ public class QuanLySach extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         btnThemMoi_ = new javax.swing.JButton();
         btnSua_ = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -316,8 +324,6 @@ public class QuanLySach extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setText("Lưu file Excel");
-
         jButton2.setText("LoadTable");
         jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -338,18 +344,16 @@ public class QuanLySach extends javax.swing.JFrame {
                 .addGap(347, 347, 347)
                 .addComponent(jLabel1)
                 .addGap(0, 274, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(LamMoi)
+                .addGap(146, 146, 146))
             .addGroup(layout.createSequentialGroup()
                 .addGap(293, 293, 293)
                 .addComponent(bntThoat_)
                 .addGap(52, 52, 52)
                 .addComponent(jButton2)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton1)
-                    .addComponent(LamMoi))
-                .addGap(119, 119, 119))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -413,11 +417,9 @@ public class QuanLySach extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
-                .addGap(109, 109, 109)
+                .addGap(113, 113, 113)
                 .addComponent(LamMoi)
-                .addGap(33, 33, 33)
-                .addComponent(jButton1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 304, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 356, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(bntThoat_)
                     .addComponent(jButton2))
@@ -490,7 +492,9 @@ public class QuanLySach extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtGiaTienActionPerformed
     public JTextField setTxtMaSach() throws Exception {
-
+        if (txtMaSach.getText().trim().equals("")) {
+            throw new Exception("Mã sách không được để trống");
+        }
         return txtMaSach;
     }
 
@@ -570,13 +574,7 @@ public class QuanLySach extends javax.swing.JFrame {
                 suaSach.setNhaXB(setTxtNhaXB().getText());
                 suaSach.setGiaTien(Double.parseDouble(setTxtGiaTien().getText()));
                 suaSach.setSoLuong((int) setTxtSoLuong().getValue());
-//                suaSach.setMaSach(txtMaSach.getText());
-//                suaSach.setTenSach(txtTenSach.getText());
-//                suaSach.setNhaXB(txtNhaXB.getText());
-//                suaSach.setTenTacGia(txtTenTG.getText());
-//                suaSach.setGiaTien(Double.parseDouble(txtGiaTien.getText()));
-//                suaSach.setSoLuong((int) txtSoLuong.getValue());
-                boolean isExist = listSach.contains(suaSach);
+                //boolean isExist = listSach.contains(suaSach);
                 if (listSach.contains(suaSach)) {
                     JOptionPane.showMessageDialog(QuanLySach.this, "Sách đã tồn tại", "ERROR", JOptionPane.ERROR_MESSAGE);
                 } else {
@@ -597,59 +595,37 @@ public class QuanLySach extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSua_ActionPerformed
 
     private void LamMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LamMoiActionPerformed
-        // TODO add your handling code here:
-        txtMaSach.setText("");
-        txtTenSach.setText("");
-        txtNhaXB.setText("");
-        txtSoLuong.setValue(0);
-        txtGiaTien.setText("");
-        txtTenTG.setText("");
+        clearInputForm();
+//        txtMaSach.setText("");
+//        txtTenSach.setText("");
+//        txtNhaXB.setText("");
+//        txtSoLuong.setValue(0);
+//        txtGiaTien.setText("");
+//        txtTenTG.setText("");
     }//GEN-LAST:event_LamMoiActionPerformed
 
     private void txtMaSachFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtMaSachFocusLost
-//        if (txtMaSach.getText().length() > 0) {
-//
-//        } else {
-//            JOptionPane.showMessageDialog(rootPane, "Mã sách không được để trống");
-//        }
+
     }//GEN-LAST:event_txtMaSachFocusLost
 
     private void txtTenSachFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtTenSachFocusLost
-//        if (txtTenSach.getText().length() > 0) {
-//
-//        } else {
-//            JOptionPane.showMessageDialog(rootPane, "Tên sách không được để trống");
-//        }
+
     }//GEN-LAST:event_txtTenSachFocusLost
 
     private void txtTenTGFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtTenTGFocusLost
-//        if (txtTenTG.getText().length() > 0) {
-//
-//        } else {
-//            JOptionPane.showMessageDialog(rootPane, "Tên tác giả không được để trống");
-//        }
+
     }//GEN-LAST:event_txtTenTGFocusLost
 
     private void txtNhaXBFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtNhaXBFocusLost
-//        if (txtNhaXB.getText().length() > 0) {
-//
-//        } else {
-//            JOptionPane.showMessageDialog(rootPane, "Nhà xuất bản không được để trống");
-//        }
+
     }//GEN-LAST:event_txtNhaXBFocusLost
 
     private void txtGiaTienFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtGiaTienFocusLost
-//        if (txtGiaTien.getText().length() > 0) {
-//
-//        } else {
-//            JOptionPane.showMessageDialog(rootPane, "Giá tiền không được để trống");
-//        }
+
     }//GEN-LAST:event_txtGiaTienFocusLost
 
     private void txtSoLuongFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtSoLuongFocusLost
-//        if (txtSoLuong.equals(0)) {
-//            JOptionPane.showMessageDialog(rootPane, "Số lượng phải lớn hơn 0");
-//        }
+
     }//GEN-LAST:event_txtSoLuongFocusLost
 
     private void btnXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaActionPerformed
@@ -686,8 +662,11 @@ public class QuanLySach extends javax.swing.JFrame {
     }//GEN-LAST:event_btnTimActionPerformed
 
     private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
-        fillTable(listSach);
-        clearInputForm();
+//        fillTable(listSach);
+//        clearInputForm();
+//        sapxep_Tang.setText("");
+//        sapxep_Giam.setText("");
+
     }//GEN-LAST:event_jButton2MouseClicked
 
     private void sapxep_TangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sapxep_TangActionPerformed
@@ -702,8 +681,12 @@ public class QuanLySach extends javax.swing.JFrame {
         fillTable(listSachTmp);
     }//GEN-LAST:event_sapxep_TangActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        fillTable(listSach);
+        clearInputForm();
+        sapxep_Tang.setSelected(true);
+        sapxep_Giam.setSelected(true);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
@@ -733,7 +716,8 @@ public class QuanLySach extends javax.swing.JFrame {
     private void btnThemMoi_ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemMoi_ActionPerformed
 
         //StringBuilder sb = new StringBuilder();//Sd để lưu các thông báo lỗi
-        txtMaSach.setText("H00" + listSach.size());
+        //txtMaSach.setText("H00" + listSach.size());
+        boolean b = true;
         try {
 
             sach = new Sach((setTxtMaSach().getText()), setTxtTenSach().getText(),
@@ -741,7 +725,14 @@ public class QuanLySach extends javax.swing.JFrame {
                     (int) setTxtSoLuong().getValue(),
                     Float.parseFloat(setTxtGiaTien().getText())
             );
-            if (listSach.contains(sach)) {
+            for (Sach sach1 : listSach) {
+                if (sach1.getMaSach().equals(setTxtMaSach().getText())) {
+                    b = false;
+                }
+                break;
+            }
+
+            if (b == false) {
                 JOptionPane.showMessageDialog(QuanLySach.this, "Sản phẩm đã tồn tại", "ERROR", JOptionPane.ERROR_MESSAGE);
             } else {
                 listSach.add(sach);
@@ -753,37 +744,13 @@ public class QuanLySach extends javax.swing.JFrame {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(QuanLySach.this, e.toString(), "Error", JOptionPane.ERROR_MESSAGE);
         }
+
     }//GEN-LAST:event_btnThemMoi_ActionPerformed
 
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(QuanLySach.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(QuanLySach.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(QuanLySach.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(QuanLySach.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -801,7 +768,6 @@ public class QuanLySach extends javax.swing.JFrame {
     private javax.swing.JButton btnTim;
     private javax.swing.JButton btnXoa;
     private javax.swing.ButtonGroup buttonGroup1;
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
