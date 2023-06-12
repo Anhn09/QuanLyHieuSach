@@ -78,6 +78,13 @@ public class QuanLyHoaDonNhap extends javax.swing.JFrame {
         e.printStackTrace();
     }
     }
+    
+    public QuanLyHoaDonNhap() {
+        initComponents();
+        showComboData();
+        layHDN();
+        loadTable();
+    }
     private void showComboData(){
         List<String> data = QuanLySach.getData();
         for (String ma : data) {
@@ -85,12 +92,6 @@ public class QuanLyHoaDonNhap extends javax.swing.JFrame {
             
         }
     }
-    public QuanLyHoaDonNhap() {
-        initComponents();
-        layHDN();
-        loadTable();
-    }
-
     public void loadTable() {
         jtblHoaDonNhap.setModel(new TableHDNhap(ds));
     }
@@ -217,8 +218,6 @@ public class QuanLyHoaDonNhap extends javax.swing.JFrame {
                 jbtnTimHDActionPerformed(evt);
             }
         });
-
-        jcmbMaSach.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "01", "02", "03" }));
 
         jbtnSua.setBackground(new java.awt.Color(51, 255, 255));
         jbtnSua.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
