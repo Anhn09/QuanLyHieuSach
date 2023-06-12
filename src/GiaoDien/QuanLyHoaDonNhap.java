@@ -48,7 +48,7 @@ public class QuanLyHoaDonNhap extends javax.swing.JFrame {
      * Creates new form QuanLyHoaDon
      */
     public void layHDN() {
-      String filePath = "D:\\hoadon.txt";
+      String filePath = "hoadon.txt";
     ds.clear(); // Xóa danh sách hiện tại trước khi lấy dữ liệu mới
     
     try {
@@ -353,7 +353,7 @@ private boolean kiemTraMaHoaDonTonTai(String maHD) {
         }
     }
     
-    String filePath = "D:\\hoadon.txt";
+    String filePath = "hoadon.txt";
     File file = new File(filePath);
     if (file.exists()) {
         try {
@@ -375,7 +375,7 @@ private boolean kiemTraMaHoaDonTonTai(String maHD) {
     return false; // Mã hóa đơn không tồn tại
 }
     private void jbtnThemHoaDonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnThemHoaDonActionPerformed
-        String filePath = "D:\\hoadon.txt";
+        String filePath = "hoadon.txt";
     
     // Lấy thông tin từ các trường nhập liệu trên giao diện
     String maHD = jtfMaHD.getText();
@@ -427,7 +427,7 @@ private boolean kiemTraMaHoaDonTonTai(String maHD) {
     }//GEN-LAST:event_jbtnTimHDActionPerformed
 
     private void jbtnSuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnSuaActionPerformed
-    String filePath = "D:\\hoadon.txt";
+    String filePath = "hoadon.txt";
     String maHD = jtfMaHD.getText();
     String maSach = (String) jcmbMaSach.getSelectedItem();
     String maNV = jtfMaNV.getText();
@@ -477,7 +477,7 @@ private boolean kiemTraMaHoaDonTonTai(String maHD) {
 //            columns[5] = jtfDonGia.getText();
 //              String maHDNCu = jtfMaHD.getText();
     private void jbtnXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnXoaActionPerformed
-        String filePath = "D:\\hoadon.txt";
+        String filePath = "hoadon.txt";
     String maHD = jtfMaHD.getText();
     
     // Đọc tất cả các dòng từ tệp tin và lưu vào danh sách tạm thời
