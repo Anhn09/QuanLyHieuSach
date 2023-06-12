@@ -728,8 +728,8 @@ public class QuanLySach extends javax.swing.JFrame {
             for (Sach sach1 : listSach) {
                 if (sach1.getMaSach().equals(setTxtMaSach().getText())) {
                     b = false;
+                    break;
                 }
-                break;
             }
 
             if (b == false) {
