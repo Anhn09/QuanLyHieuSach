@@ -78,7 +78,13 @@ public class QuanLyHoaDonNhap extends javax.swing.JFrame {
         e.printStackTrace();
     }
     }
-
+    private void showComboData(){
+        List<String> data = QuanLySach.getData();
+        for (String ma : data) {
+            jcmbMaSach.addItem(ma);
+            
+        }
+    }
     public QuanLyHoaDonNhap() {
         initComponents();
         layHDN();
